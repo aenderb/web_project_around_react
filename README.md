@@ -1,16 +1,24 @@
-# React + Vite
+# Tripleten web_project_around
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Tecnologias utilizadas HTML + CSS + Javascript + React
+  - Para esse projeto apliquei diversos conhecimentos como:
+    - HTML semantico
+    - Flexbox
+    - como incluir Fonts com (@font-face)
+    - Metodologia BEM (CSS + Arquivos)
+    - Design Responsivo com uso de Media Queries
+    - Formulário Modal (popup)
+    - Javascript 
+        - Abrir e fechar form modal 
+        - Carregar valores de dois inputs da pagina 
+        - Alterar e Salvar valores de inputs
+        - Tornar a lista de fotos dinamica
+        - incluir e excluir img com manipulaçao de DOM
+        - POO - Programaçao orientada a Objetos
+        - Refactor de pastas para organizarção do projeto
+        - Refactor com todas as classes e suas responsabilidades
+  
+    - REACT refactor para react funcional
+  
+Acesse a pagina aqui: https://aenderb.github.io/web_project_around_react/
