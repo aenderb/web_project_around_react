@@ -1,6 +1,6 @@
 function EditAvatar() {
   return (
-    <form className="popup__form" id="update-avatar-form" novalidate>
+    <form className="popup__form" id="update-avatar-form" noValidate>
       <label className="popup__field popup__field-avatar">
         <input
           type="url"

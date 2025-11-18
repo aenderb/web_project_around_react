@@ -1,6 +1,6 @@
 function EditProfile() {
   return (
-    <form className="popup__form" id="profile-form" novalidate>
+    <form className="popup__form" id="profile-form" noValidate>
       <label className="popup__field">
         <input
           type="text"
@@ -8,8 +8,8 @@ function EditProfile() {
           id="profile-name-input"
           name="name"
           placeholder="Nome"
-          minlength="2"
-          maxlength="40"
+          minLength="2"
+          maxLength="40"
           required
         />
         <span className="popup__input-error profile-name-input-error"></span>
@@ -21,8 +21,8 @@ function EditProfile() {
           id="profile-about-input"
           name="about"
           placeholder="Sobre mim"
-          minlength="2"
-          maxlength="200"
+          minLength="2"
+          maxLength="200"
           required
         />
         <span className="popup__input-error profile-about-input-error"></span>
