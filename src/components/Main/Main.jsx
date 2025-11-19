@@ -1,6 +1,6 @@
 import { useState } from "react";
 import pencil from "../../images/Pencil.svg";
-import plus from "../../images/plus.svg";
+import plus from "../../images/Plus.svg";
 import avatar from "../../images/Jaques_cousteau_pic.jpg";
 
 import Popup from "./components/Popup/Popup";
@@ -8,7 +8,7 @@ import NewCard from "./components/Popup/components/NewCard/NewCard";
 import EditProfile from "./components/Popup/components/EditProfile/EditProfile";
 import EditAvatar from "./components/Popup/components/EditAvatar/EditAvatar";
 import Card from "./components/Card/Card";
-import OpenImage from "./components/Popup/components/OpenImage/OpenImage";
+
 function Main() {
   const [popup, setPopup] = useState(null);
   const newCardPopup = { title: "Novo Local", children: <NewCard /> };
