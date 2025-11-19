@@ -19,6 +19,6 @@ Tecnologias utilizadas HTML + CSS + Javascript + React
         - Refactor de pastas para organizarção do projeto
         - Refactor com todas as classes e suas responsabilidades
   
-    - REACT refactor para react funcional
+    - **REACT** refactor para react funcional
   
 Acesse a pagina aqui: https://aenderb.github.io/web_project_around_react/
