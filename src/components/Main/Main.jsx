@@ -1,62 +1,95 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import pencil from "../../images/Pencil.svg";
 import plus from "../../images/Plus.svg";
-import avatar from "../../images/Jaques_cousteau_pic.jpg";
 
 import Popup from "./components/Popup/Popup";
+import { api } from "../../utils/api";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 import NewCard from "./components/Popup/components/NewCard/NewCard";
 import EditProfile from "./components/Popup/components/EditProfile/EditProfile";
 import EditAvatar from "./components/Popup/components/EditAvatar/EditAvatar";
 import Card from "./components/Card/Card";
 
 function Main() {
+  const [cards, setCards] = useState([]);
   const [popup, setPopup] = useState(null);
-  const newCardPopup = { title: "Novo Local", children: <NewCard /> };
+  const { currentUser } = useContext(CurrentUserContext);
+
+  useEffect(() => {
+    api
+      .getInitialCards()
+      .then((data) => {
+        setCards(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const handleCardDelete = useCallback(async (card) => {
+    try {
+      await api.deleteCard(card._id);
+      setCards((prevCards) => prevCards.filter((c) => c._id !== card._id));
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const handleCardLike = useCallback(async (card) => {
+    try {
+      const newCard = await api.changeLikeCardStatus(card._id, card.isLiked);
+
+      setCards((prevCards) =>
+        prevCards.map((c) => (c._id === card._id ? newCard : c))
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  // Abrir popup
+  const handleOpenPopup = useCallback((popupData) => {
+    setPopup(popupData);
+  }, []);
+
+  // Fechar popup
+  const handleClosePopup = useCallback(() => {
+    setPopup(null);
+  }, []);
+
+  // Abrir imagem no popup
+  const handleImageClick = useCallback((imageComponent) => {
+    setPopup(imageComponent);
+  }, []);
+
   const editProfilePopup = {
     title: "Editar perfil",
-    children: <EditProfile />,
+    children: (
+      <EditProfile
+        key={currentUser?._id || currentUser?.name || "edit-profile"}
+        onClose={handleClosePopup}
+      />
+    ),
   };
   const editAvatarPopup = {
     title: "Alterar a foto do perfil",
-    children: <EditAvatar />,
+    children: <EditAvatar onClose={handleClosePopup} />,
   };
 
-  const cards = [
-    {
-      isLiked: false,
-      _id: "5d1f0611d321eb4bdcd707dd",
-      name: "Yosemite Valley",
-      link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_yosemite.jpg",
-      owner: "5d1f0611d321eb4bdcd707dd",
-      createdAt: "2019-07-05T08:10:57.741Z",
-    },
-    {
-      isLiked: false,
-      _id: "5d1f064ed321eb4bdcd707de",
-      name: "Lake Louise",
-      link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lake-louise.jpg",
-      owner: "5d1f0611d321eb4bdcd707dd",
-      createdAt: "2019-07-05T08:11:58.324Z",
-    },
-  ];
-
-  function handleOpenPopup(popup) {
-    setPopup(popup);
-  }
-
-  function handleClosePopup() {
-    setPopup(null);
-  }
-
-  function handleImageClick(imageComponent) {
-    setPopup(imageComponent);
-  }
+  const newCardPopup = {
+    title: "Novo Local",
+    children: <NewCard onClose={handleClosePopup} />,
+  };
 
   return (
     <main>
       <section className="profile">
         <div className="profile__avatar-wrap">
-          <img src={avatar} alt="Avatar" className="profile__avatar" />
+          <img
+            src={currentUser.avatar}
+            alt="Avatar"
+            className="profile__avatar"
+          />
           <button
             className="profile__avatar-update"
             type="button"
@@ -71,7 +104,7 @@ function Main() {
         </div>
         <div className="profile__container">
           <div className="profile__description">
-            <p className="profile__name">Jacques Cousteau</p>
+            <p className="profile__name">{currentUser.name}</p>
 
             <button
               className="profile__button-edit"
@@ -85,7 +118,7 @@ function Main() {
               />
             </button>
           </div>
-          <p className="profile__about">Explorador</p>
+          <p className="profile__about">{currentUser.about}</p>
         </div>
 
         <button
@@ -100,7 +133,13 @@ function Main() {
       <section className="elements">
         <ul className="elements__list">
           {cards.map((card) => (
-            <Card key={card._id} card={card} onImageClick={handleImageClick} />
+            <Card
+              key={card._id}
+              card={card}
+              onImageClick={handleImageClick}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
           ))}
         </ul>
       </section>
