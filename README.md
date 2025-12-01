@@ -1,4 +1,4 @@
-# Tripleten web_project_around
+# Tripleten web_project_around_REACT
 
 
 Tecnologias utilizadas HTML + CSS + Javascript + React
