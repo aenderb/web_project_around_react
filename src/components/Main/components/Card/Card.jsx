@@ -1,11 +1,10 @@
 import React from "react";
 
-import OpenImage from "../Popup/components/OpenImage/OpenImage";
+import ImagePopup from "../Popup/components/ImagePopup/ImagePopup";
 function Card({ card, onCardLike, onImageClick, onTrashClick }) {
-  
   const imageComponent = {
     title: null,
-    children: <OpenImage card={card} />,
+    children: <ImagePopup card={card} />,
   };
 
   const removeCardPopup = {

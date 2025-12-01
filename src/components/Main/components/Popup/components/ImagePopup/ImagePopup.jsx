@@ -1,4 +1,4 @@
-function OpenImage(props) {
+function ImagePopup(props) {
   const { card } = props;
 
   return (
@@ -8,4 +8,4 @@ function OpenImage(props) {
     </>
   );
 }
-export default OpenImage;
+export default ImagePopup;
