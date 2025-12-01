@@ -1,20 +1,22 @@
-//import { useContext } from "react";
 import React from "react";
 
 import OpenImage from "../Popup/components/OpenImage/OpenImage";
-function Card({ card, onCardLike, onCardDelete, onImageClick }) {
+function Card({ card, onCardLike, onImageClick, onTrashClick }) {
+  
   const imageComponent = {
     title: null,
     children: <OpenImage card={card} />,
   };
 
+  const removeCardPopup = {
+    type: "delete",
+    title: "Tem certeza?",
+    card,
+  };
+
   const cardLikeButtonClassName = `card__like-button ${
     card.isLiked ? "card__like-button_active" : ""
   }`;
-
-  const handleDeleteClick = () => {
-    onCardDelete(card);
-  };
 
   const handleLikeClick = () => {
     onCardLike(card);
@@ -24,7 +26,7 @@ function Card({ card, onCardLike, onCardDelete, onImageClick }) {
     <li className="card">
       <button
         className="card__remove-button"
-        onClick={handleDeleteClick}
+        onClick={() => onTrashClick(removeCardPopup)}
       ></button>
       <img
         className="card__image"
@@ -38,9 +40,7 @@ function Card({ card, onCardLike, onCardDelete, onImageClick }) {
           className={cardLikeButtonClassName}
           onClick={handleLikeClick}
           type="button"
-        >
-          {card.isLiked}
-        </button>
+        ></button>
       </div>
     </li>
   );

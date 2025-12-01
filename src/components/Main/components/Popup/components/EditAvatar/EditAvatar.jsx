@@ -1,21 +1,40 @@
-import { useRef, useContext, useCallback } from "react";
-
+import { useState, useRef, useContext, useCallback } from "react";
+import {
+  validateAvatarUrl,
+  validateAvatarForm,
+} from "../../../../../../utils/avatarFormValidation.js";
 import { CurrentUserContext } from "../../../../../../contexts/CurrentUserContext.js";
 
-function EditAvatar({ onClose }) {
-  const avartarInputRef = useRef();
+function EditAvatar({ isLoadingAvatar }) {
+  const avatarInputRef = useRef();
+  const [avatarError, setAvatarError] = useState("");
+
   const { handleUpdateAvatar } = useContext(CurrentUserContext);
+
+  const handleAvatarChange = () => {
+    const value = avatarInputRef.current.value;
+
+    const error = validateAvatarUrl(value);
+    setAvatarError(error);
+  };
 
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
 
-      handleUpdateAvatar({
-        avatar: avartarInputRef.current.value,
-      });
-      onClose();
+      const value = avatarInputRef.current.value;
+
+      const validation = validateAvatarForm(value);
+
+      if (validation.isValid) {
+        handleUpdateAvatar({
+          avatar: value,
+        });
+      } else {
+        setAvatarError(validation.urlError);
+      }
     },
-    [handleUpdateAvatar, onClose]
+    [handleUpdateAvatar]
   );
 
   return (
@@ -23,22 +42,35 @@ function EditAvatar({ onClose }) {
       className="popup__form"
       id="update-avatar-form"
       onSubmit={handleSubmit}
-      noValidate
     >
       <label className="popup__field popup__field-avatar">
         <input
           type="url"
-          className="popup__input"
+          className={`popup__input ${
+            avatarError ? "popup__input_type_error" : ""
+          }`}
           id="link-avatar-input"
           name="avatar"
           placeholder="Link do avatar"
-          ref={avartarInputRef}
+          ref={avatarInputRef}
+          onChange={handleAvatarChange}
           required
         />
-        <span className="popup__input-error link-avatar-input-error"></span>
+
+        <span
+          className={`popup__input-error ${
+            avatarError ? "popup__error_visible" : ""
+          }`}
+        >
+          {avatarError}
+        </span>
       </label>
-      <button type="submit" className="popup__button popup__button-avatar">
-        Salvar
+      <button
+        type="submit"
+        className="popup__button popup__button-avatar"
+        disabled={isLoadingAvatar}
+      >
+        {isLoadingAvatar ? "Salvando..." : "Salvar"}
       </button>
     </form>
   );

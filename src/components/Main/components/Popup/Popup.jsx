@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 function Popup(props) {
-  //children é o conteúdo de popup
   const { title, children, onClose } = props;
 
   // Fechar com ESC
@@ -13,7 +12,6 @@ function Popup(props) {
 
     document.addEventListener("keydown", handleEscClose);
 
-    // Cleanup - remover o listener quando o componente sair
     return () => {
       document.removeEventListener("keydown", handleEscClose);
     };

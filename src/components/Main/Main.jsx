@@ -1,85 +1,62 @@
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import pencil from "../../images/Pencil.svg";
 import plus from "../../images/Plus.svg";
 
 import Popup from "./components/Popup/Popup";
-import { api } from "../../utils/api";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 import NewCard from "./components/Popup/components/NewCard/NewCard";
 import EditProfile from "./components/Popup/components/EditProfile/EditProfile";
 import EditAvatar from "./components/Popup/components/EditAvatar/EditAvatar";
+import RemoveCard from "./components/Popup/components/RemoveCard/removeCard.jsx";
 import Card from "./components/Card/Card";
 
-function Main() {
-  const [cards, setCards] = useState([]);
-  const [popup, setPopup] = useState(null);
+function Main({
+  cards,
+  onCardLike,
+  onCardDelete,
+  onAddPlaceSubmit,
+  isLoadingUserInfo,
+  isLoadingAvatar,
+  isLoadingAddCard,
+  isLoadingDeleteCard,
+  onOpenPopup,
+  onClosePopup,
+  popup,
+  setPopup,
+}) {
   const { currentUser } = useContext(CurrentUserContext);
 
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const handleCardDelete = useCallback(async (card) => {
-    try {
-      await api.deleteCard(card._id);
-      setCards((prevCards) => prevCards.filter((c) => c._id !== card._id));
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  const handleCardLike = useCallback(async (card) => {
-    try {
-      const newCard = await api.changeLikeCardStatus(card._id, card.isLiked);
-
-      setCards((prevCards) =>
-        prevCards.map((c) => (c._id === card._id ? newCard : c))
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  // Abrir popup
-  const handleOpenPopup = useCallback((popupData) => {
-    setPopup(popupData);
-  }, []);
-
-  // Fechar popup
-  const handleClosePopup = useCallback(() => {
-    setPopup(null);
-  }, []);
-
   // Abrir imagem no popup
-  const handleImageClick = useCallback((imageComponent) => {
-    setPopup(imageComponent);
-  }, []);
+  const handleImageClick = useCallback(
+    (imageComponent) => {
+      setPopup(imageComponent);
+    },
+    [setPopup]
+  );
 
-  const editProfilePopup = {
-    title: "Editar perfil",
-    children: (
-      <EditProfile
-        key={currentUser?._id || currentUser?.name || "edit-profile"}
-        onClose={handleClosePopup}
-      />
-    ),
-  };
-  const editAvatarPopup = {
-    title: "Alterar a foto do perfil",
-    children: <EditAvatar onClose={handleClosePopup} />,
-  };
+  const editProfilePopup = useMemo(
+    () => ({
+      type: "editProfile",
+      title: "Editar perfil",
+    }),
+    []
+  );
 
-  const newCardPopup = {
-    title: "Novo Local",
-    children: <NewCard onClose={handleClosePopup} />,
-  };
+  const editAvatarPopup = useMemo(
+    () => ({
+      type: "editAvatar",
+      title: "Alterar a foto do perfil",
+    }),
+    []
+  );
+
+  const newCardPopup = useMemo(
+    () => ({
+      type: "newCard",
+      title: "Novo Local",
+    }),
+    []
+  );
 
   return (
     <main>
@@ -93,7 +70,7 @@ function Main() {
           <button
             className="profile__avatar-update"
             type="button"
-            onClick={() => handleOpenPopup(editAvatarPopup)}
+            onClick={() => onOpenPopup(editAvatarPopup)}
           >
             <img
               className="profile__avatar-update-img"
@@ -109,7 +86,7 @@ function Main() {
             <button
               className="profile__button-edit"
               type="button"
-              onClick={() => handleOpenPopup(editProfilePopup)}
+              onClick={() => onOpenPopup(editProfilePopup)}
             >
               <img
                 className="profile__button-edit-img"
@@ -124,9 +101,13 @@ function Main() {
         <button
           className="profile__button-add"
           type="button"
-          onClick={() => handleOpenPopup(newCardPopup)}
+          onClick={() => onOpenPopup(newCardPopup)}
         >
-          <img className="profile__button-add-img" src={plus} alt="" />
+          <img
+            className="profile__button-add-img"
+            src={plus}
+            alt="Adicionar novo local"
+          />
         </button>
       </section>
 
@@ -137,16 +118,40 @@ function Main() {
               key={card._id}
               card={card}
               onImageClick={handleImageClick}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
+              onCardLike={onCardLike}
+              onCardDelete={onCardDelete}
+              onTrashClick={onOpenPopup}
             />
           ))}
         </ul>
       </section>
 
       {popup && (
-        <Popup onClose={handleClosePopup} title={popup.title}>
-          {popup.children}
+        <Popup onClose={onClosePopup} title={popup.title}>
+          {popup.type === "editProfile" && (
+            <EditProfile
+              isLoadingUserInfo={isLoadingUserInfo}
+              key={currentUser?._id || currentUser?.name || "edit-profile"}
+            />
+          )}
+          {popup.type === "editAvatar" && (
+            <EditAvatar isLoadingAvatar={isLoadingAvatar} />
+          )}
+          {popup.type === "newCard" && (
+            <NewCard
+              isLoadingAddCard={isLoadingAddCard}
+              onClose={onClosePopup}
+              onAddPlaceSubmit={onAddPlaceSubmit}
+            />
+          )}
+          {popup.type === "delete" && (
+            <RemoveCard
+              onRemoveCardSubmit={onCardDelete}
+              card={popup.card}
+              isLoadingDeleteCard={isLoadingDeleteCard}
+            />
+          )}
+          {!popup.type && popup.children}
         </Popup>
       )}
     </main>
